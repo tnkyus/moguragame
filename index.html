@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { text-align: center; font-family: sans-serif; }
+    #gameArea {
+      width: 300px; height: 300px; margin: 20px auto;
+      position: relative; background: #f0f0f0; border-radius: 10px;
+    }
+    .mole {
+      font-size: 40px;
+      position: absolute;
+      cursor: pointer;
+      transition: top 0.2s, left 0.2s;
+    }
+    button {
+      padding: 10px 20px; font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>モグラたたき！</h1>
+<p>スコア: <span id="score">0</span> / タイム: <span id="time">10</span>秒</p>
+<div id="gameArea"></div>
+<button onclick="startGame()">スタート</button>
+
+<script>
+  let score = 0;
+  let time = 10;
+  let mole;
+  let gameInterval;
+  let timerInterval;
+
+  function startGame() {
+    score = 0;
+    time = 10;
+    document.getElementById("score").textContent = score;
+    document.getElementById("time").textContent = time;
+
+    if (mole) mole.remove(); // 既存のモグラを消す
+
+    mole = document.createElement("div");
+    mole.classList.add("mole");
+    mole.textContent = "🐹";
+    document.getElementById("gameArea").appendChild(mole);
+    mole.onclick = hitMole;
+
+    gameInterval = setInterval(moveMole, 700);
+    timerInterval = setInterval(() => {
+      time--;
+      document.getElementById("time").textContent = time;
+      if (time === 0) endGame();
+    }, 1000);
+  }
+
+  function moveMole() {
+    const gameArea = document.getElementById("gameArea");
+    const maxX = gameArea.clientWidth - 40;
+    const maxY = gameArea.clientHeight - 40;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    mole.style.left = x + "px";
+    mole.style.top = y + "px";
+  }
+
+  function hitMole() {
+    score++;
+    document.getElementById("score").textContent = score;
+  }
+
+  function endGame() {
+    clearInterval(gameInterval);
+    clearInterval(timerInterval);
+    alert("終了！あなたのスコアは " + score + " 点です！");
+    if (mole) mole.remove();
+  }
+</script>
+
+</body>
+</html>
